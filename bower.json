@@ -1,0 +1,23 @@
+{
+	"name": "angular-placeholder-shim",
+	"version": "0.1.0",
+	"description": "Angular.js shim for the placeholder attribute (adds IE6+ support)",
+	"main": "./angular-placeholder-shim.js",
+	"author": "Uri Shaked",
+	"license": "MIT",
+	"homepage": "https://github.com/urish/angular-placeholder-shim",
+	"ignore": [
+	],
+	"dependencies": {
+		"angular": "~1.0.x",
+		"jquery": "~1.9.1",
+		"jquery-html5-placeholder-shim": "git://github.com/parndt/jquery-html5-placeholder-shim"
+	},
+	"devDependencies": {
+		"angular-mocks": "~1.0.x"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/urish/angular-placeholder-shim.git"
+	}
+}
