@@ -7,10 +7,13 @@
 describe('Directive: placeholder', function () {
 	var originalPlaceholderBrowserSupported = jQuery.placeholder.browser_supported;
 	var originalPlaceholderShim = jQuery.fn._placeholder_shim;
+	var originalHasFocus = document.hasFocus;
 	var element;
 
 	beforeEach(module(function($provide) {
 		element = null;
+		// We override document.hasFocus() so that jquery.is('focus') will not check if.
+		document.hasFocus = undefined;
 		spyOn(jQuery.fn, '_placeholder_shim').andCallThrough();
 	}));
 
@@ -19,6 +22,7 @@ describe('Directive: placeholder', function () {
 	afterEach(function() {
 		jQuery.placeholder.browser_supported = originalPlaceholderBrowserSupported;
 		jQuery.fn._placeholder_shim = originalPlaceholderShim;
+		document.hasFocus = originalHasFocus;
 		if (element) {
 			element.remove();
 		}
@@ -67,27 +71,49 @@ describe('Directive: placeholder', function () {
 		}));
 
 		it('should hide the placeholder when the input gets a value', inject(function ($rootScope, $compile) {
-			var element = angular.element('<input placeholder="foobar" />');
-			expect(jQuery.fn._placeholder_shim).not.toHaveBeenCalled();
+			$rootScope.someValue = '';
+			var element = angular.element('<input placeholder="foobar" ng-model="someValue" />');
 			angular.element('body').append(element);
 			element = $compile(element)($rootScope);
 			var placeholder = element.data('placeholder');
+			$rootScope.$digest();
 			expect(placeholder.is(':visible')).toBeTruthy();
-			element.val('something');
+			$rootScope.someValue = 'something';
 			$rootScope.$digest();
 			expect(placeholder.is(':visible')).toBeFalsy();
 		}));
 
 		it('should show the placeholder when the input is empty', inject(function ($rootScope, $compile) {
-			var element = angular.element('<input placeholder="foobar" value="something" />');
-			expect(jQuery.fn._placeholder_shim).not.toHaveBeenCalled();
+			$rootScope.someValue = 'test';
+			var element = angular.element('<input placeholder="foobar" ng-model="someValue" />');
 			angular.element('body').append(element);
 			element = $compile(element)($rootScope);
 			var placeholder = element.data('placeholder');
+			$rootScope.$digest();
 			expect(placeholder.is(':visible')).toBeFalsy();
-			element.val('');
+			$rootScope.someValue = '';
 			$rootScope.$digest();
 			expect(placeholder.is(':visible')).toBeTruthy();
+		}));
+
+		it('should hide the placeholder when the input has focus', inject(function ($rootScope, $compile) {
+			var element = angular.element('<input placeholder="foobar" />');
+			angular.element('body').append(element);
+			element = $compile(element)($rootScope);
+			element.focus();
+			var placeholder = element.data('placeholder');
+			expect(placeholder.is(':visible')).toBeFalsy();
+		}));
+
+		it('should keep the element hidden after a digest cycle if it has focus', inject(function ($rootScope, $compile) {
+			var element = angular.element('<input placeholder="foobar" />');
+			angular.element('body').append(element);
+			element = $compile(element)($rootScope);
+			$rootScope.$digest();
+			element.focus();
+			$rootScope.$digest();
+			var placeholder = element.data('placeholder');
+			expect(placeholder.is(':visible')).toBeFalsy();
 		}));
 	});
 });

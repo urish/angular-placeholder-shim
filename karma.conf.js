@@ -10,7 +10,7 @@ module.exports = function (config) {
 		frameworks: ['jasmine'],
 		logLevel: config.LOG_INFO,
 		browsers: ['PhantomJS'],
-		reporters: ['dots'],
+		reporters: ['dots', 'coverage'],
 		singleRun: true,
 		files: [
 			'components/jquery/jquery.js',
@@ -19,6 +19,10 @@ module.exports = function (config) {
 			'components/jquery-html5-placeholder-shim/jquery.html5-placeholder-shim.js',
 			'angular-placeholder-shim.js',
 			'tests.js'
-		]
+		],
+		preprocessors: {
+			'components/jquery-html5-placeholder-shim/jquery.html5-placeholder-shim.js': 'coverage',
+			'angular-placeholder-shim.js': 'coverage'
+		}
 	});
 };
