@@ -1,4 +1,4 @@
-angular-spinner
+angular-placeholder-shim
 ===============
 
 Angular directive to make the input/textarea placeholder attribute work on all browsers.
