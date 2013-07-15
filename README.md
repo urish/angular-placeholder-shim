@@ -2,7 +2,7 @@ angular-placeholder-shim
 ===============
 
 Angular directive to make the input/textarea placeholder attribute work on all browsers.
-Uses the [jquery-html5-placeholder-shim](JQuery HTML5 Placeholder Shim Plugin).
+Uses the [jquery-html5-placeholder-shim](https://github.com/parndt/jquery-html5-placeholder-shim).
 
 Copyright (C) 2013, Uri Shaked <uri@urish.org>.
 
