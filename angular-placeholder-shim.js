@@ -1,11 +1,12 @@
-/* License: MIT.
+/* angular-placeholder-shim version 0.2.0
+ * License: MIT.
  * Copyright (C) 2013, Uri Shaked.
  */
 
 'use strict';
 
 angular.module('placeholderShim', [])
-	.directive('placeholder', function () {
+	.directive('placeholder', ['$interpolate', function ($interpolate) {
 		if (jQuery.placeholder.browser_supported()) {
 			return {};
 		}
@@ -15,26 +16,37 @@ angular.module('placeholderShim', [])
 				color: '#888',
 				cls: 'placeholder'
 			};
-			var shimCreated = false;
+
+			var interpolatedPlaceholder = $interpolate(element.attr('placeholder'));
+			var placeholderText = null;
+
+			var overlay = null;
 			if (element.is(':visible')) {
 				element._placeholder_shim(config);
-				shimCreated = true;
+				overlay = element.data('placeholder');
 			}
 
-			// The following line accounts for value changes from within the code
+			// The following code accounts for value changes from within the code
+			// and for dynamic changes in placeholder text
 			scope.$watch(function () {
-				if (!shimCreated && element.is(':visible')) {
+				if (!overlay && element.is(':visible')) {
 					element._placeholder_shim(config);
-					shimCreated = true;
+					overlay = element.data('placeholder');
 				}
-				if (shimCreated && !element.is(':focus')) {
-					var overlay = element.data('placeholder');
+				if (overlay && (element.get(0) !== document.activeElement)) {
 					if (element.val().length) {
 						overlay.hide();
 					} else {
 						overlay.show();
 					}
 				}
+				if (overlay) {
+					var newText = interpolatedPlaceholder(scope);
+					if (newText !== placeholderText) {
+						placeholderText = newText;
+						overlay.text(placeholderText);
+					}
+				}
 			});
 		};
-	});
+	}]);
