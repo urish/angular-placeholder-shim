@@ -15,17 +15,10 @@ module.exports = function (grunt) {
 				singleRun: true
 			}
 		},
-		ngmin: {
-			dist: {
-				files: {
-					'angular-placeholder-shim.min.js': 'angular-placeholder-shim.js'
-				}
-			}
-		},
 		uglify: {
 			dist: {
 				files: {
-					'angular-placeholder-shim.min.js': 'angular-placeholder-shim.min.js'
+					'angular-placeholder-shim.min.js': 'angular-placeholder-shim.js'
 				}
 			}
 		}
@@ -36,7 +29,6 @@ module.exports = function (grunt) {
 	]);
 
 	grunt.registerTask('build', [
-		'ngmin',
 		'uglify'
 	]);
 
