@@ -29,6 +29,11 @@ That's all. Now your will be able to see your placeholders even on IE9.
 <input type="text" name="email" placeholder="Enter your email" />
 ```
 
+You can even have an Angular expression as the placeholder
+```html
+<input type="text" placeholder="{{5*5}}" />
+```
+
 License
 ----
 
