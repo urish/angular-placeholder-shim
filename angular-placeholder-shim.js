@@ -6,7 +6,7 @@
 'use strict';
 
 angular.module('placeholderShim', [])
-	.directive('placeholder', ['$interpolate', function ($interpolate) {
+	.directive('placeholder', ['$interpolate', '$timeout', function ($interpolate, $timeout) {
 		if (jQuery.placeholder.browser_supported()) {
 			return {};
 		}
@@ -22,16 +22,20 @@ angular.module('placeholderShim', [])
 
 			var overlay = null;
 			if (element.is(':visible')) {
-				element._placeholder_shim(config);
-				overlay = element.data('placeholder');
+				$timeout(function(){
+					element._placeholder_shim(config);
+					overlay = element.data('placeholder');
+				}, 300);
 			}
 
 			// The following code accounts for value changes from within the code
 			// and for dynamic changes in placeholder text
 			scope.$watch(function () {
 				if (!overlay && element.is(':visible')) {
-					element._placeholder_shim(config);
-					overlay = element.data('placeholder');
+					$timeout(function(){
+						element._placeholder_shim(config);
+						overlay = element.data('placeholder');
+					}, 300);
 				}
 				if (overlay && (element.get(0) !== document.activeElement)) {
 					if (element.val().length) {
