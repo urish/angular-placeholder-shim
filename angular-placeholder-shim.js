@@ -25,7 +25,7 @@ angular.module('placeholderShim', [])
 				$timeout(function(){
 					element._placeholder_shim(config);
 					overlay = element.data('placeholder');
-				}, 300);
+				});
 			}
 
 			// The following code accounts for value changes from within the code
@@ -35,7 +35,7 @@ angular.module('placeholderShim', [])
 					$timeout(function(){
 						element._placeholder_shim(config);
 						overlay = element.data('placeholder');
-					}, 300);
+					});
 				}
 				if (overlay && (element.get(0) !== document.activeElement)) {
 					if (element.val().length) {
