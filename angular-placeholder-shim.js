@@ -1,4 +1,4 @@
-/* angular-placeholder-shim version 0.2.1
+/* angular-placeholder-shim version 0.3.0
  * License: MIT.
  * Copyright (C) 2013, Uri Shaked.
  */
