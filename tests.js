@@ -157,5 +157,25 @@ describe('Directive: placeholder', function () {
 			$rootScope.$digest();
 			expect(element.data('placeholder').text()).toBe('42');
 		});
+
+		it('should cancel the overlay creation timeout on scope destroy', function () {
+			var scope = $rootScope.$new();
+			var element = angular.element('<input placeholder="foobar" />');
+			angular.element('body').append(element);
+			element = $compile(element)(scope);
+			$rootScope.$digest();
+			scope.$destroy();
+			$timeout.verifyNoPendingTasks();
+			expect(element.data('placeholder')).toBeUndefined();
+		});
+
+		it('should gracefully handle the situation when the scope was destroyed before the element was added to DOM', function () {
+			var scope = $rootScope.$new();
+			var element = angular.element('<input placeholder="foobar" />');
+			element = $compile(element)(scope);
+			$rootScope.$digest();
+			scope.$destroy();
+			$timeout.verifyNoPendingTasks();
+		});
 	});
 });

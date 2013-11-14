@@ -58,8 +58,10 @@ angular.module('placeholderShim', [])
 			});
 
 			scope.$on('$destroy', function() {
-				$timeout.cancel(pendingTimer);
-				pendingTimer = null;
+				if (pendingTimer) {
+					$timeout.cancel(pendingTimer);
+					pendingTimer = null;
+				}
 			});
 		};
 	}]);
