@@ -8,6 +8,7 @@ describe('Directive: placeholder', function () {
 	var originalPlaceholderBrowserSupported = jQuery.placeholder.browser_supported;
 	var originalPlaceholderShim = jQuery.fn._placeholder_shim;
 	var element;
+	var $timeout;
 
 	beforeEach(module(function($provide) {
 		element = null;
@@ -15,6 +16,10 @@ describe('Directive: placeholder', function () {
 	}));
 
 	beforeEach(module('placeholderShim'));
+
+	beforeEach(inject(function ($injector) {
+		$timeout = $injector.get('$timeout');
+	}));
 
 	afterEach(function() {
 		jQuery.placeholder.browser_supported = originalPlaceholderBrowserSupported;
@@ -49,20 +54,24 @@ describe('Directive: placeholder', function () {
 			$compile = $injector.get('$compile');
 		}));
 
-		it('should call the placeholder-shim plugin', function () {
+		it('should call the placeholder-shim plugin, but only after a timeout', function () {
 			element = angular.element('<input placeholder="foobar" />');
 			angular.element('body').append(element);
 			element = $compile(element)($rootScope);
+			expect(jQuery.fn._placeholder_shim).not.toHaveBeenCalled();
+			$timeout.flush();
 			expect(jQuery.fn._placeholder_shim).toHaveBeenCalled();
 		});
 
-		it('should not call the placeholder-shim plugin until the element becomes visisble', function() {
+		it('should not call the placeholder-shim plugin until the element becomes visible', function() {
 			element = angular.element('<input placeholder="foobar" />');
 			element = $compile(element)($rootScope);
 			$rootScope.$digest();
+			$timeout.verifyNoPendingTasks();
 			expect(jQuery.fn._placeholder_shim).not.toHaveBeenCalled();
 			angular.element('body').append(element);
 			$rootScope.$digest();
+			$timeout.flush();
 			expect(jQuery.fn._placeholder_shim).toHaveBeenCalled();
 		});
 
@@ -71,15 +80,18 @@ describe('Directive: placeholder', function () {
 			angular.element('body').append(element);
 			element = $compile(element)($rootScope);
 			$rootScope.$digest();
+			$timeout.flush();
 			expect(element.data('placeholder')).toBeDefined();
 		});
 
 		it('should call the shim when the element first becomes visible', function() {
 			var element = angular.element('<input placeholder="foobar" />');
-			expect(jQuery.fn._placeholder_shim).not.toHaveBeenCalled();
 			element = $compile(element)($rootScope);
+			$timeout.verifyNoPendingTasks();
+			expect(jQuery.fn._placeholder_shim).not.toHaveBeenCalled();
 			angular.element('body').append(element);
 			$rootScope.$digest();
+			$timeout.flush();
 			expect(jQuery.fn._placeholder_shim).toHaveBeenCalled();
 		});
 
@@ -88,8 +100,9 @@ describe('Directive: placeholder', function () {
 			var element = angular.element('<input placeholder="foobar" ng-model="someValue" />');
 			angular.element('body').append(element);
 			element = $compile(element)($rootScope);
-			var placeholder = element.data('placeholder');
 			$rootScope.$digest();
+			$timeout.flush();
+			var placeholder = element.data('placeholder');
 			expect(placeholder.is(':visible')).toBeTruthy();
 			$rootScope.someValue = 'something';
 			$rootScope.$digest();
@@ -101,8 +114,9 @@ describe('Directive: placeholder', function () {
 			var element = angular.element('<input placeholder="foobar" ng-model="someValue" />');
 			angular.element('body').append(element);
 			element = $compile(element)($rootScope);
-			var placeholder = element.data('placeholder');
 			$rootScope.$digest();
+			$timeout.flush();
+			var placeholder = element.data('placeholder');
 			expect(placeholder.is(':visible')).toBeFalsy();
 			$rootScope.someValue = '';
 			$rootScope.$digest();
@@ -113,6 +127,7 @@ describe('Directive: placeholder', function () {
 			var element = angular.element('<input placeholder="foobar" />');
 			angular.element('body').append(element);
 			element = $compile(element)($rootScope);
+			$timeout.flush();
 			element.focus();
 			var placeholder = element.data('placeholder');
 			expect(placeholder.is(':visible')).toBeFalsy();
@@ -123,6 +138,7 @@ describe('Directive: placeholder', function () {
 			angular.element('body').append(element);
 			element = $compile(element)($rootScope);
 			$rootScope.$digest();
+			$timeout.flush();
 			element.focus();
 			$rootScope.$digest();
 			var placeholder = element.data('placeholder');
@@ -135,6 +151,7 @@ describe('Directive: placeholder', function () {
 			angular.element('body').append(element);
 			element = $compile(element)($rootScope);
 			$rootScope.$digest();
+			$timeout.flush();
 			expect(element.data('placeholder').text()).toBe('12');
 			$rootScope.myVar = 37;
 			$rootScope.$digest();

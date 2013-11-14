@@ -21,21 +21,25 @@ angular.module('placeholderShim', [])
 			var placeholderText = null;
 
 			var overlay = null;
-			if (element.is(':visible')) {
-				$timeout(function(){
+			var pendingTimer = null;
+
+			function addPlaceholder() {
+				pendingTimer = $timeout(function () {
 					element._placeholder_shim(config);
 					overlay = element.data('placeholder');
+					pendingTimer = null;
 				});
+			}
+
+			if (element.is(':visible')) {
+				addPlaceholder();
 			}
 
 			// The following code accounts for value changes from within the code
 			// and for dynamic changes in placeholder text
 			scope.$watch(function () {
-				if (!overlay && element.is(':visible')) {
-					$timeout(function(){
-						element._placeholder_shim(config);
-						overlay = element.data('placeholder');
-					});
+				if (!overlay && element.is(':visible') && !pendingTimer) {
+					addPlaceholder();
 				}
 				if (overlay && (element.get(0) !== document.activeElement)) {
 					if (element.val().length) {
@@ -51,6 +55,11 @@ angular.module('placeholderShim', [])
 						overlay.text(placeholderText);
 					}
 				}
+			});
+
+			scope.$on('$destroy', function() {
+				$timeout.cancel(pendingTimer);
+				pendingTimer = null;
 			});
 		};
 	}]);
