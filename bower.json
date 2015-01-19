@@ -9,7 +9,7 @@
 	"ignore": [
 	],
 	"dependencies": {
-		"angular": ">=1.0.0 <1.3.0",
+		"angular": ">=1.0.0 <1.4.0",
 		"jquery": ">=1.9.0",
 		"jquery-html5-placeholder-shim": "git://github.com/parndt/jquery-html5-placeholder-shim"
 	},
