@@ -44,8 +44,10 @@ angular.module('placeholderShim', [])
 				if (overlay && (element.get(0) !== document.activeElement)) {
 					if (element.val().length) {
 						overlay.hide();
+						element.trigger('angularplaceholdershim.hide');
 					} else {
 						overlay.show();
+						element.trigger('angularplaceholdershim.show');
 					}
 				}
 				if (overlay) {
