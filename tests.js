@@ -177,5 +177,43 @@ describe('Directive: placeholder', function () {
 			scope.$destroy();
 			$timeout.verifyNoPendingTasks();
 		});
+
+		it('should emit angularplaceholdershim.hide event when overlay is hidden', function () {
+			$rootScope.someValue = 'test';
+			var element = angular.element('<input placeholder="foobar" ng-model="someValue" />');
+			angular.element('body').append(element);
+			element = $compile(element)($rootScope);
+
+			var handler = jasmine.createSpy('hidden');
+			element.on('angularplaceholdershim.hide', handler);
+
+			$rootScope.$digest();
+			$timeout.flush();
+			var placeholder = element.data('placeholder');
+			expect(placeholder.is(':visible')).toBeFalsy();
+
+			$rootScope.someValue = 'a value';
+			$rootScope.$digest();
+			expect(handler).toHaveBeenCalled();
+		});
+
+		it('should emit angularplaceholdershim.show event when overlay is shown', function () {
+			$rootScope.someValue = 'test';
+			var element = angular.element('<input placeholder="foobar" ng-model="someValue" />');
+			angular.element('body').append(element);
+			element = $compile(element)($rootScope);
+
+			var handler = jasmine.createSpy('shown');
+			element.on('angularplaceholdershim.show', handler);
+
+			$rootScope.$digest();
+			$timeout.flush();
+			var placeholder = element.data('placeholder');
+			expect(placeholder.is(':visible')).toBeFalsy();
+
+			$rootScope.someValue = '';
+			$rootScope.$digest();
+			expect(handler).toHaveBeenCalled();
+		});
 	});
 });
